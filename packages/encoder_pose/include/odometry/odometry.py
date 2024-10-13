@@ -15,9 +15,9 @@ def delta_phi(ticks: int, prev_ticks: int, resolution: int) -> Tuple[float, floa
     """
 
     # TODO: these are random values, you have to implement your own solution in here
-    ticks = prev_ticks + int(np.random.uniform(0, 10))
-    dphi = np.random.random()
-    # ---
+    ticks = ticks - prev_ticks
+    dphi = ticks * resolution
+
     return dphi, ticks
 
 
@@ -51,8 +51,17 @@ def estimate_pose(
     """
 
     # These are random values, replace with your own
-    x_curr = np.random.random()
-    y_curr = np.random.random()
-    theta_curr = np.random.random()
-    # ---
+
+    # Movement of wheels (in m)
+    d_right, d_left = R * delta_phi_right, R * delta_phi_left
+
+    # Change in the position of the COM 
+    d_com = (d_left + d_right) / 2
+
+    # Rotation of the duckiebot 
+    delta_theta = (d_right - d_left) / (2*baseline)
+    theta_curr = theta_prev + delta_theta
+    x_curr = x_prev + d_com * np.cos(theta_curr)
+    y_curr = y_prev + d_com * np.sin(theta_curr)
+
     return x_curr, y_curr, theta_curr
